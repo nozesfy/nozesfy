@@ -22,7 +22,7 @@ O desenvolvimento e manutenção do Nozesfy são conduzidos pela seguinte equipe
 - **Alaide**: Lider Tecnica e Gestão de Documentação
 - **Luciana**: Gestão de Documentação
 - **William**: Arquitetura de Banco de Dados & Design
-- **Arthur**: Design de Interface (UI/UX)
+- **Arthur**: Design
 
 ---
 
