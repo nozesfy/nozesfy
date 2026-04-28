@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>nozesfy · Docs</title>
-  <!-- Favicon (referência ao favicon.webp) -->
+  <title>nozesfy · Hub</title>
+  <!-- Favicon (referência ao favicon.webp para a aba do navegador) -->
   <link rel="icon" type="image/webp" href="favicon.webp">
   <link rel="shortcut icon" type="image/webp" href="favicon.webp">
   <style>
@@ -15,217 +15,185 @@
     }
 
     body {
-      background: white;        /* bg white explícito */
+      background: white;        /* bg white explícito conforme solicitado */
       font-family: system-ui, 'Segoe UI', 'Inter', 'Helvetica Neue', sans-serif;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1.5rem;
+      padding: 2rem;
     }
 
-    /* container central: layout flex coluna, alinhamento suave */
+    /* container central único: tudo alinhado no centro, layout simples e elegante */
     .index-center {
       max-width: 720px;
       width: 100%;
       text-align: center;
-      background: transparent;   /* mantém fundo branco do body */
+      background: transparent;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 2rem;
-      transition: all 0.2s ease;
+      gap: 2.5rem;
     }
 
-    /* bloco das logos: empilha logo grande + favicon com espaçamento harmonioso */
-    .logo-stack {
+    /* container da logo principal */
+    .logo-wrapper {
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      gap: 1.5rem;
+      width: 100%;
     }
 
-    /* logo principal (logo.webp) */
+    /* logo.webp com destaque e tamanho responsivo */
     .main-logo {
-      max-width: 280px;
+      max-width: 320px;
       width: 100%;
       height: auto;
       display: block;
       object-fit: contain;
       filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.03));
-      transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      transition: transform 0.25s ease, filter 0.2s;
     }
 
     .main-logo:hover {
-      transform: scale(1.02);
+      transform: scale(1.01);
+      filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.05));
     }
 
-    /* favicon abaixo (segundo elemento visual com descrição sutil) - estilo elegante */
-    .favicon-below {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .favicon-img {
-      width: 64px;
-      height: 64px;
-      object-fit: contain;
-      border-radius: 18px;
-      background: #fafafc;    /* leve toque neutro para destacar ícones claros/escuros */
-      padding: 0.3rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.03);
-      transition: all 0.2s ease;
-    }
-
-    .favicon-img:hover {
-      transform: scale(1.05);
-      background: #ffffff;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-    }
-
-    /* botão documentação refinado, acessível e responsivo */
+    /* botão de documentação estilizado, marcante e acessível */
     .btn-docs {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.65rem;
-      background: #0a0c10;
+      gap: 0.7rem;
+      background: #0b0e14;
       color: white;
-      font-weight: 550;
-      font-size: 1.1rem;
-      padding: 0.85rem 2rem;
+      font-weight: 570;
+      font-size: 1.2rem;
+      padding: 0.9rem 2.4rem;
       border-radius: 60px;
       text-decoration: none;
       font-family: inherit;
       letter-spacing: -0.2px;
-      transition: all 0.25s ease;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(0px);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05), 0 1px 0 rgba(255, 255, 255, 0.02) inset;
+      transition: all 0.25s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 1px 0 rgba(255, 255, 255, 0.02) inset;
       cursor: pointer;
+      backdrop-filter: blur(0px);
     }
 
     .btn-docs:hover {
-      background: #1a1e26;
-      transform: translateY(-2px);
-      box-shadow: 0 12px 22px -8px rgba(0, 0, 0, 0.2);
+      background: #181e2a;
+      transform: translateY(-3px);
+      box-shadow: 0 18px 28px -10px rgba(0, 0, 0, 0.2), 0 2px 4px rgba(0, 0, 0, 0.02);
       border-color: rgba(255, 255, 255, 0.2);
     }
 
     .btn-docs:active {
       transform: translateY(1px);
       transition: 0.05s;
+      box-shadow: 0 8px 14px -6px rgba(0, 0, 0, 0.15);
     }
 
-    /* ícone do botão (opcional, pequeno indicador externo) */
+    /* ícone da seta com movimento sutil */
     .btn-icon {
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       line-height: 1;
-      transition: transform 0.2s;
+      transition: transform 0.2s ease;
     }
 
     .btn-docs:hover .btn-icon {
-      transform: translateX(3px);
+      transform: translateX(4px);
     }
 
-    /* texto informativo opcional mas clean (sem poluição) */
+    /* pequeno rodapé informativo opcional (mantendo identidade limpa) */
     .info-note {
-      margin-top: 0.5rem;
       font-size: 0.85rem;
-      color: #8e8e93;
+      color: #8e8e98;
       background: transparent;
       letter-spacing: -0.2px;
+      margin-top: 0.2rem;
     }
 
-    /* responsividade: ajusta logo principal em telas menores */
-    @media (max-width: 500px) {
+    /* responsividade: adapta tamanhos em dispositivos menores */
+    @media (max-width: 550px) {
       .main-logo {
-        max-width: 220px;
-      }
-      .favicon-img {
-        width: 54px;
-        height: 54px;
+        max-width: 260px;
       }
       .btn-docs {
-        padding: 0.7rem 1.6rem;
+        padding: 0.75rem 1.8rem;
         font-size: 1rem;
+        gap: 0.6rem;
       }
-      .logo-stack {
-        gap: 1rem;
+      .btn-icon {
+        font-size: 1.1rem;
+      }
+      .index-center {
+        gap: 2rem;
       }
     }
 
-    @media (max-width: 380px) {
+    @media (max-width: 420px) {
       .main-logo {
-        max-width: 180px;
+        max-width: 210px;
+      }
+      body {
+        padding: 1.5rem;
       }
     }
 
-    /* garantia de fundo branco total sem qualquer influência externa */
+    /* garantia de fundo body absoluto branco */
     html {
       background: white;
     }
 
-    /* foco acessível */
+    /* foco acessível para navegação por teclado */
     .btn-docs:focus-visible {
       outline: 3px solid #0055cc;
-      outline-offset: 2px;
+      outline-offset: 3px;
+      border-radius: 60px;
     }
 
-    .favicon-img:focus-visible {
-      outline: 2px solid #0055cc;
-      border-radius: 18px;
+    /* small enhancement - qualquer texto adicional */
+    a {
+      -webkit-tap-highlight-color: transparent;
     }
   </style>
 </head>
 <body>
   <div class="index-center">
-    <!-- pilha vertical com logo principal + favicon abaixo, exatamente conforme solicitado -->
-    <div class="logo-stack">
-      <!-- LOGO principal (logo.webp) -->
+    <!-- apenas a logo principal (logo.webp) — a segunda imagem abaixo foi removida -->
+    <div class="logo-wrapper">
       <img class="main-logo" src="logo.webp" alt="nozesfy logotipo principal" loading="eager">
-
-      <!-- favicon abaixo do logo (favicon.webp) segundo elemento visual -->
-      <div class="favicon-below">
-        <img class="favicon-img" src="favicon.webp" alt="favicon nozesfy" loading="eager">
-      </div>
     </div>
 
-    <!-- botão que redireciona para documentação GitHub (link especificado) -->
+    <!-- botão único para documentação GitHub (exatamente conforme especificação) -->
     <a class="btn-docs" href="https://github.com/nozesfy" target="_blank" rel="noopener noreferrer">
       <span>📘 Documentação</span>
       <span class="btn-icon">→</span>
     </a>
 
-    <!-- rodapé discreto informativo, opcional mas mantém identidade -->
+    <!-- rodapé discreto (apenas referência suave) -->
     <div class="info-note">
-      nozesfy · hub central
+      nozesfy · hub
     </div>
   </div>
 
-  <!-- tratamento minimalista: caso alguma imagem não carregue, manter layout sem quebrar -->
+  <!-- script mínimo para fallback de imagens (caso logo.webp não carregue, não quebrar layout) -->
   <script>
-    // (opcional) console silencioso apenas para garantir que os assets não quebrem a estrutura.
-    // Nada essencial, apenas pequena segurança para logs de desenvolvimento não interferirem no usuário.
-    (function checkImages() {
-      const logo = document.querySelector('.main-logo');
-      const fav = document.querySelector('.favicon-img');
-      if (logo) {
-        logo.addEventListener('error', () => {
-          // Sem alertas intrusivos, apenas fallback visual suave.
-          logo.style.opacity = '0.85';
-          logo.alt = 'logo (não encontrado)';
-        });
-      }
-      if (fav) {
-        fav.addEventListener('error', () => {
-          fav.style.opacity = '0.8';
-          fav.alt = 'favicon (não encontrado)';
+    (function() {
+      const logoImg = document.querySelector('.main-logo');
+      if (logoImg) {
+        logoImg.addEventListener('error', () => {
+          // fallback visual discreto sem alerta, apenas indicativo
+          logoImg.style.opacity = '0.85';
+          logoImg.alt = 'logo (não encontrado)';
+          // opcional: mensagem silenciosa no console (sem interferência visual)
+          console.debug("logo.webp não carregou, verifique o caminho do asset.");
         });
       }
     })();
   </script>
 </body>
-</html>
+  </html>
