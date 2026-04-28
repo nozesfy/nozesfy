@@ -88,7 +88,7 @@ O sistema deve permitir:
 |:---|:---|:---|
 | **RF01** | Autenticação de Usuários | Login, Cadastro e Recuperação de Senha com criptografia. |
 | **RF02** | Gestão Multi-tenant | Criação e isolamento de dados por Organização. |
-| **RF03** | Controle de Estoque | Cadastro de produtos com código de barras, categoria e unidades. |
+| **RF03** | Controle de Estoque | Cadastro de produtos, categoria e unidades. |
 | **RF04** | Movimentações | Registro de Entradas (Entry), Saídas (Exit) e Transferências entre locais. |
 | **RF05** | Localizações | Gestão de múltiplos pontos de estoque (Depósitos, Lojas, etc). |
 | **RF06** | Gestão de Parceiros | Cadastro de Fornecedores e Clientes associados às movimentações. |
@@ -111,7 +111,7 @@ Atributos de qualidade e restrições técnicas:
 | **RNF03** | Performance | Listagem de histórico de estoque limitada a 200 registros por consulta inicial. |
 | **RNF04** | Disponibilidade | O banco SQLite garante persistência local estável e backups simplificados. |
 | **RNF05** | Portabilidade | Funciona tanto em navegadores modernos quanto em Windows/macOS/Linux via wrapper. |
-| **RNF06** | UX/UI | Interface responsiva e otimizada para produtividade (Dashboard Dark Mode). |
+| **RNF06** | UX/UI | Interface responsiva e otimizada para produtividade. |
 
 ---
 
