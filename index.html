@@ -14,20 +14,34 @@
       box-sizing: border-box;
     }
 
+    /* REMOVER COMPLETAMENTE QUALQUER POSSIBILIDADE DE SCROLL */
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;  /* Remove scroll da página inteira */
+      background: white;
+    }
+
     body {
-      background: white;        /* bg white explícito conforme solicitado */
+      background: white;        /* bg white explícito */
       font-family: system-ui, 'Segoe UI', 'Inter', 'Helvetica Neue', sans-serif;
-      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      /* Sem padding que possa gerar overflow - centralização pura */
+      padding: 0;
+      margin: 0;
+      position: fixed;          /* Fixa o body na viewport, eliminando qualquer scroll residual */
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
     }
 
-    /* container central único: tudo alinhado no centro, layout simples e elegante */
+    /* container central: ocupa 100% da altura disponível sem scroll */
     .index-center {
-      max-width: 720px;
       width: 100%;
+      max-width: 720px;
       text-align: center;
       background: transparent;
       display: flex;
@@ -35,6 +49,18 @@
       align-items: center;
       justify-content: center;
       gap: 2.5rem;
+      /* padding vertical leve, mas seguro (sem causar overflow) */
+      padding: 1rem;
+      margin: 0 auto;
+      /* Garantia de que o conteúdo não force scroll */
+      max-height: 100vh;
+      overflow-y: auto;         /* Permite scroll APENAS se conteúdo exceder, mas com layout enxuto não vai rolar */
+      scrollbar-width: none;    /* Firefox: esconde scrollbar caso apareça (mas não vai precisar) */
+      -ms-overflow-style: none; /* IE/Edge */
+    }
+    /* Esconde scrollbar no Chrome/Safari para o container (apenas garantia) */
+    .index-center::-webkit-scrollbar {
+      display: none;
     }
 
     /* container da logo principal */
@@ -116,7 +142,7 @@
       margin-top: 0.2rem;
     }
 
-    /* responsividade: adapta tamanhos em dispositivos menores */
+    /* responsividade: adapta tamanhos sem causar scroll */
     @media (max-width: 550px) {
       .main-logo {
         max-width: 260px;
@@ -131,6 +157,7 @@
       }
       .index-center {
         gap: 2rem;
+        padding: 0.75rem;
       }
     }
 
@@ -138,14 +165,14 @@
       .main-logo {
         max-width: 210px;
       }
-      body {
-        padding: 1.5rem;
+      .index-center {
+        gap: 1.75rem;
       }
     }
 
-    /* garantia de fundo body absoluto branco */
-    html {
-      background: white;
+    /* Garantia extra: nenhum elemento pode exceder a viewport verticalmente */
+    body, .index-center {
+      overflow-x: hidden;
     }
 
     /* foco acessível para navegação por teclado */
@@ -155,45 +182,88 @@
       border-radius: 60px;
     }
 
-    /* small enhancement - qualquer texto adicional */
     a {
       -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Prevenção de qualquer scroll acidental via conteúdo extra */
+    img, div, a {
+      max-width: 100%;
     }
   </style>
 </head>
 <body>
   <div class="index-center">
-    <!-- apenas a logo principal (logo.webp) — a segunda imagem abaixo foi removida -->
+    <!-- apenas a logo principal (logo.webp) — sem segunda imagem, sem scroll -->
     <div class="logo-wrapper">
       <img class="main-logo" src="logo.webp" alt="nozesfy logotipo principal" loading="eager">
     </div>
 
-    <!-- botão único para documentação GitHub (exatamente conforme especificação) -->
+    <!-- botão único para documentação GitHub (especificação: https://github.com/nozesfy) -->
     <a class="btn-docs" href="https://github.com/nozesfy" target="_blank" rel="noopener noreferrer">
       <span>📘 Documentação</span>
       <span class="btn-icon">→</span>
     </a>
 
-    <!-- rodapé discreto (apenas referência suave) -->
+    <!-- rodapé discreto apenas como elemento identitário (não causa scroll) -->
     <div class="info-note">
       nozesfy · hub
     </div>
   </div>
 
-  <!-- script mínimo para fallback de imagens (caso logo.webp não carregue, não quebrar layout) -->
+  <!-- script mínimo para fallback de imagens (caso logo.webp não carregue, sem quebrar layout) -->
   <script>
     (function() {
       const logoImg = document.querySelector('.main-logo');
       if (logoImg) {
         logoImg.addEventListener('error', () => {
-          // fallback visual discreto sem alerta, apenas indicativo
+          // fallback visual discreto sem alerta, apenas indicativo de ausência
           logoImg.style.opacity = '0.85';
           logoImg.alt = 'logo (não encontrado)';
-          // opcional: mensagem silenciosa no console (sem interferência visual)
-          console.debug("logo.webp não carregou, verifique o caminho do asset.");
+          // mensagem silenciosa apenas para debug (sem interferência na experiência)
+          if (window.console && console.debug) {
+            console.debug("logo.webp não carregou. Verifique o caminho do arquivo.");
+          }
         });
       }
+
+      // Bloqueio extra de qualquer scroll por teclado ou gestos (garantia)
+      // Impede eventos de scroll (ruedas, setas, etc) apenas se houver comportamento invasivo,
+      // mas a estrutura já não tem scroll. Ainda assim, previne páginas inteiras.
+      function preventScroll(e) {
+        // Impede apenas se o elemento não tiver necessidade de scroll natural.
+        // Como não há scroll em lugar nenhum, bloqueia qualquer tentativa.
+        const target = e.target;
+        // Permite apenas se escutarmos elementos com overflow auto que não existem.
+        // como não há, bloqueamos o comportamento padrão para evitar movimentação indesejada.
+        if (!(target && (target.scrollHeight > target.clientHeight || target.scrollWidth > target.clientWidth))) {
+          // Pequena prevenção: não interfere em cliques ou ações normais.
+          if (e.type === 'wheel' || e.type === 'keydown') {
+            const keys = ['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', ' ', 'Space', 'Home', 'End'];
+            if (e.type === 'keydown' && keys.includes(e.key)) {
+              e.preventDefault();
+            }
+            if (e.type === 'wheel') {
+              e.preventDefault();
+            }
+          }
+        }
+      }
+
+      // Adiciona listeners apenas para garantir ambiente estático, sem scroll.
+      // Isso é uma camada extra de segurança para que absolutamente nenhum scroll ocorra.
+      window.addEventListener('wheel', preventScroll, { passive: false });
+      window.addEventListener('keydown', preventScroll);
+      // Touchmove também pode gerar scroll? Sim, bloqueia marginalmente sem afetar interação com botão.
+      window.addEventListener('touchmove', function(e) {
+        // Evita scroll por toque, sem atrapalhar clique no botão.
+        e.preventDefault();
+      }, { passive: false });
+
+      // Pequena exceção: restaura comportamento padrão apenas em elementos que precisam de scroll nativo?
+      // Como não há elementos com scroll, tudo tranquilo.
+      // O rodapé e o botão permanecem clicáveis.
     })();
   </script>
 </body>
-  </html>
+</html>
