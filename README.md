@@ -7,7 +7,7 @@
 
 ---
 
-# ![Nozesfy Logo](./logo.png)
+# ![Nozesfy Logo](./logo.webp)
 
 # 1. 📌 Regras de Negócio
 
