@@ -7,9 +7,6 @@
 
 # ![Nozesfy Logo](./logo.webp)
 
-# 1. 📌 Regras de Negócio
-
-...
 # 📘 DOCUMENTAÇÃO TÉCNICA — POKÉ ARENA CARDS
 
 ## 1. Visão Geral
