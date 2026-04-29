@@ -3,7 +3,6 @@
 > **Versão:** 1.0.0  
 > **Data:** 28 de Abril de 2026  
 > **Status:** Finalizada
-> **Natureza:** Sistema de Gestão e Controle de Estoque
 
 
 # ![Nozesfy Logo](./logo.webp)
