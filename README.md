@@ -5,7 +5,6 @@
 > **Status:** Finalizada
 > **Natureza:** Sistema de Gestão e Controle de Estoque
 
-----
 
 # ![Nozesfy Logo](./logo.webp)
 
