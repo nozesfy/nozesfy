@@ -1,0 +1,1 @@
+ALTER TABLE `stock_movements` ADD `target_location_id` text REFERENCES inventory_locations(id);
