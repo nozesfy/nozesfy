@@ -7,6 +7,13 @@
 
 ---
 
+# ![Nozesfy Logo](./logo.png)
+
+# 1. 📌 Regras de Negócio
+
+...
+# 📘 DOCUMENTAÇÃO TÉCNICA — POKÉ ARENA CARDS
+
 ## 1. Visão Geral
 O **Nozesfy** é uma plataforma robusta de gestão de estoque e controle, projetada para atender pequenos comércios e empresas. O sistema oferece controle preciso de estoque, gestão de fornecedores, clientes e movimentações financeiras/materiais.
 
