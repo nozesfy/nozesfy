@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.2 (2026-06-15)
+
+- Adicionado SEO completo: OG tags, Twitter Card, viewport, JSON-LD, canonical URL
+- Criado `app/sitemap.ts` com 7 rotas públicas
+- Criado `app/robots.ts` bloqueando `/dashboard/` e `/api/`
+
 ## v1.0.1 (2026-06-15)
 
 - Atualizado `.gitignore` com patterns para TypeScript, Python, IDE, Drizzle
