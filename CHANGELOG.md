@@ -1,5 +1,13 @@
 # Changelog
 
+## v2.1.0 (2026-06-15)
+
+- Deploy compatível com Cloudflare Pages (`@cloudflare/next-on-pages`)
+- DB driver: `postgres` → `@neondatabase/serverless` + `drizzle-orm/neon-http` (HTTP-based)
+- Auth: `bcryptjs` → Web Crypto API (PBKDF2) — compatível com Workers
+- Criado `wrangler.toml` com `nodejs_compat`
+- Criado `lib/crypto.ts` com hash/verify via PBKDF2
+
 ## v2.0.0 (2026-06-15)
 
 - **BREAKING**: Migrado banco de SQLite para PostgreSQL (Supabase)

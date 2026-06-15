@@ -1,0 +1,4 @@
+name = "nozesfy"
+pages_build_output_dir = ".vercel/output/static"
+compatibility_date = "2026-06-15"
+compatibility_flags = ["nodejs_compat"]

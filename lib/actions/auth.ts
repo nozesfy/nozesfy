@@ -12,8 +12,7 @@ import { profiles, organizations, products, stockMovements, inventoryLocations, 
 // inArray: filtro WHERE campo IN (lista de valores)
 import { eq, inArray } from 'drizzle-orm';
 
-// bcrypt: biblioteca para criar e verificar hashes de senhas de forma segura
-import bcrypt from 'bcryptjs';
+import { hashPassword, verifyPassword } from '@/lib/crypto';
 
 // SignJWT: cria tokens JWT assinados / jwtVerify: verifica e decodifica tokens JWT
 import { SignJWT, jwtVerify } from 'jose';
@@ -55,9 +54,7 @@ export async function login(formData: FormData) {
       return { error: 'Credenciais inválidas.' };
     }
 
-    // Compara a senha digitada com o hash armazenado no banco
-    // bcrypt.compare é assíncrono e retorna true/false
-    const passwordsMatch = await bcrypt.compare(password, user.password);
+    const passwordsMatch = await verifyPassword(password, user.password);
 
     // Se a senha não bate → nega acesso (mesma mensagem genérica por segurança)
     if (!passwordsMatch) {
@@ -119,8 +116,7 @@ export async function signup(formData: FormData) {
       return { error: 'E-mail já cadastrado.' };
     }
 
-    // Criptografa a senha com bcrypt (fator de custo 10 = bom equilíbrio segurança/performance)
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await hashPassword(password);
 
     // Gera IDs únicos para o usuário e para a organização
     const userId = crypto.randomUUID();
