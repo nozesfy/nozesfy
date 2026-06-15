@@ -1,7 +1,48 @@
 node_modules/
 .next/
+.next.database/
 coverage/
-.DS_Store
-*.log
+out/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Env files
 .env*
 !.env.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python (tkinter)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+tkinter/build/
+tkinter/dist/
+
+# Drizzle
+drizzle/
+.drizzle/
+
+# Turbo
+.turbo/
+
+# Misc
+*.exe

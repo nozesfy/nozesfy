@@ -1,11 +1,13 @@
-# Documentação Técnica: Projeto Nozesfy
+# Nozesfy — Gestão de Estoque
 
 > **Versão:** 1.0.0  
-> **Data:** 28 de Abril de 2026  
 > **Status:** Finalizada
 
 
-# ![Nozesfy Logo](./logo.webp)
+# ![Nozesfy Logo](./public/logo.webp)
+
+📄 [CHANGELOG.md](./CHANGELOG.md) — Histórico de alterações  
+🤖 [AGENTS.md](./AGENTS.md) — Instruções para agentes de IA (OpenCode)
 
 ## 1. Visão Geral
 O **Nozesfy** é uma plataforma robusta de gestão de estoque e controle, projetada para atender pequenos comércios e empresas. O sistema oferece controle preciso de estoque, gestão de fornecedores, clientes e movimentações financeiras/materiais.
@@ -39,30 +41,27 @@ Este projeto foi desenvolvido como parte integrante do currículo acadêmico:
 A organização dos arquivos segue o padrão do Next.js 15 (App Router) e as melhores práticas de modularização:
 
 ### 2.1 Pastas Principais
-- **`/app`**: Contém as rotas e páginas da aplicação.
-    - `/api`: Endpoints de API serverless.
-    - `/dashboard`: Área restrita do sistema com controle de estoque.
-    - `/login-desktop`: Interface otimizada para o acesso via aplicativo desktop.
-    - `layout.tsx`: Estrutura base da página (Navbar, Sidebar).
-    - `page.tsx`: Página inicial (Landing Page).
-- **`/components`**: Componentes React reutilizáveis.
-    - `AuthProvider.tsx`: Gerencia o estado de autenticação do usuário.
-    - `CreateOrganization.tsx`: Fluxo de criação de nova empresa.
-- **`/lib`**: O "Coração" da aplicação.
-    - `/db`: Definições do banco de dados (schema) e conexão com o Drizzle.
-    - `/actions`: Funções de servidor (Server Actions) para lógica de inventário e auth.
-- **`/drizzle`**: Arquivos de migração SQL gerados automaticamente para manter o banco sincronizado.
-- **`/public`**: Arquivos estáticos como logos, ícones e imagens.
-- **`/tkinter`**: Código-fonte do wrapper Desktop desenvolvido em Python.
-- **`/hooks`**: Hooks personalizados do React para lógica de interface.
+- **`app/`**: Rotas e páginas (Next.js App Router).
+    - `api/`: Endpoints serverless (webhooks Stripe).
+    - `dashboard/`: Área restrita com sidebar e auth guard próprios.
+    - `layout.tsx`: Layout raiz com `AuthProvider`.
+- **`components/`**: Componentes React reutilizáveis (Navbar, AuthProvider, Footer).
+- **`lib/`**: Core da aplicação.
+    - `db/`: Schema Drizzle e conexão com SQLite.
+    - `actions/`: Server Actions (auth, inventory, stripe).
+- **`drizzle/`**: Migrações SQL geradas automaticamente.
+- **`public/`**: Arquivos estáticos (logos, ícones).
+- **`tkinter/`**: Wrapper desktop em Python (PyWebView).
+- **`scratch/`**: Scripts utilitários para DB (não fazem parte do app).
+- **`hooks/`**: Hooks React personalizados.
 
 ### 2.2 Arquivos de Configuração
-- **`sqlite.db`**: O arquivo físico que armazena todos os dados do sistema.
-- **`drizzle.config.ts`**: Configurações do mapeamento Objeto-Relacional.
-- **`next.config.ts`**: Configurações específicas do framework Next.js.
-- **`package.json`**: Manifesto do projeto com todas as dependências e scripts de execução.
-- **`main.spec`**: Instruções para o PyInstaller compilar o executável desktop.
-- **`tsconfig.json`**: Configurações do compilador TypeScript para garantir tipagem estática.
+- **`sqlite.db`**: Banco de dados SQLite versionado.
+- **`drizzle.config.ts`**: Configuração do Drizzle ORM.
+- **`next.config.ts`**: Configuração do Next.js 15.
+- **`package.json`**: Manifesto com dependências e scripts.
+- **`main.spec`**: PyInstaller spec para build do desktop app.
+- **`tsconfig.json`**: TypeScript strict mode, path alias `@/*`.
 
 ---
 
@@ -80,7 +79,9 @@ A aplicação segue os padrões modernos de desenvolvimento Full Stack:
 
 ---
 
-## 3. Requisitos Funcionais (RF)
+## 4. Requisitos Funcionais (RF)
+
+> **Nota:** Os requisitos abaixo foram definidos na fase de planejamento acadêmico. Consulte o código e os testes para o comportamento atual.
 
 O sistema deve permitir:
 
@@ -100,7 +101,7 @@ O sistema deve permitir:
 
 ---
 
-## 4. Requisitos Não Funcionais (RNF)
+## 5. Requisitos Não Funcionais (RNF)
 
 Atributos de qualidade e restrições técnicas:
 
@@ -115,7 +116,7 @@ Atributos de qualidade e restrições técnicas:
 
 ---
 
-## 5. Regras de Negócio (RN)
+## 6. Regras de Negócio (RN)
 
 1.  **Criação de Organização**: Ao se cadastrar, todo usuário torna-se automaticamente o `Owner` de uma nova organização padrão.
 2.  **Controle de Acesso**: Apenas usuários com o papel `Owner` podem convidar novos membros, excluir a organização ou resetar dados globais.
@@ -127,7 +128,7 @@ Atributos de qualidade e restrições técnicas:
 
 ---
 
-## 6. Modelagem de Dados (MER)
+## 7. Modelagem de Dados (MER)
 
 O diagrama abaixo representa a estrutura de tabelas e relacionamentos do banco de dados SQLite gerenciado pelo Drizzle.
 
@@ -157,7 +158,7 @@ erDiagram
 
 ---
 
-## 7. Dicionário de Dados
+## 8. Dicionário de Dados
 
 ### 7.1 Tabela: `organizations`
 Raiz de cada cliente do sistema.
@@ -186,7 +187,7 @@ Raiz de cada cliente do sistema.
 
 ---
 
-## 8. Integração Desktop (Shell)
+## 9. Integração Desktop (Shell)
 O projeto inclui um componente de interoperabilidade (`tkinter/main.py`) que:
 1.  Inicia uma janela nativa via Tkinter.
 2.  Carrega o servidor local ou aponta para a URL de produção.
@@ -194,7 +195,7 @@ O projeto inclui um componente de interoperabilidade (`tkinter/main.py`) que:
 
 ---
 
-## 9. Instruções de Desenvolvimento
+## 10. Instruções de Desenvolvimento
 
 ### Instalação
 ```bash
@@ -203,12 +204,24 @@ npm install
 
 ### Configuração do Banco
 ```bash
-npx drizzle-kit push:sqlite
+npx drizzle-kit push
 ```
 
-### Execução
+### Execução (desenvolvimento)
 ```bash
 npm run dev
+```
+
+### Lint e Typecheck
+```bash
+npm run lint
+npx tsc --noEmit
+```
+
+### Migrações (após alterar schema)
+```bash
+npx drizzle-kit generate
+npx drizzle-kit migrate
 ```
 
 ---
