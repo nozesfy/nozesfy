@@ -1,5 +1,16 @@
 # Changelog
 
+## v2.0.0 (2026-06-15)
+
+- **BREAKING**: Migrado banco de SQLite para PostgreSQL (Supabase)
+- Schema refatorado para `pgTable` com tipos PostgreSQL e `uuid`/`jsonb`
+- Conexão via `drizzle-orm/postgres-js` com `DATABASE_URL`
+- Removido `better-sqlite3` e `@types/better-sqlite3`
+- Adicionado `postgres` driver
+- Criado `.env.example` com `DATABASE_URL`
+- `sqlite.db` removido do tracking e adicionado ao `.gitignore`
+- Criada branch `sqlite` para versão legada com SQLite
+
 ## v1.0.2 (2026-06-15)
 
 - Adicionado SEO completo: OG tags, Twitter Card, viewport, JSON-LD, canonical URL

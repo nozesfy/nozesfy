@@ -16,7 +16,7 @@
     "@types/bcryptjs": "^2.4.6",
     "autoprefixer": "^10.4.21",
     "bcryptjs": "^3.0.3",
-    "better-sqlite3": "^12.9.0",
+    "postgres": "^3.4.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
@@ -37,7 +37,7 @@
     "@cloudflare/workers-types": "^4.20260426.1",
     "@tailwindcss/postcss": "4.1.11",
     "@tailwindcss/typography": "^0.5.19",
-    "@types/better-sqlite3": "^7.6.13",
+
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

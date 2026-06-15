@@ -44,6 +44,10 @@ drizzle/
 # Turbo
 .turbo/
 
+# Database
+sqlite.db
+*.db
+
 # Misc
 *.exe
 AGENTS.md

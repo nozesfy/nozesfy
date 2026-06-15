@@ -1,139 +1,109 @@
-// Importa os tipos de coluna do adaptador SQLite do Drizzle ORM
-// sqliteTable: cria uma tabela, text: coluna de texto, integer: coluna numérica inteira, real: coluna numérica decimal
-import { sqliteTable, text, integer, real } from 'drizzle-orm/sqlite-core';
-
-// sql: permite escrever SQL bruto dentro do Drizzle (ex: valor padrão CURRENT_TIMESTAMP)
-// relations: define os relacionamentos entre tabelas para queries com joins
+import { pgTable, text, integer, doublePrecision, uuid, jsonb } from 'drizzle-orm/pg-core';
 import { sql, relations } from 'drizzle-orm';
 
-// ─────────────────────────────────────────────
-// TABELA: organizations (Organizações / Empresas)
-// Cada usuário dono cria uma organização que agrupa todos os dados
-// ─────────────────────────────────────────────
-export const organizations = sqliteTable('organizations', {
-  id: text('id').primaryKey(),                                     // ID único da organização (UUID gerado manualmente)
-  name: text('name').notNull(),                                    // Nome da empresa/organização (obrigatório)
-  subscription_tier: text('subscription_tier').default('basic'),   // Plano atual: 'basic', 'pro', etc. Padrão: 'basic'
-  subscription_status: text('subscription_status'),                // Status da assinatura no Stripe: 'active', 'canceled', etc.
-  stripe_customer_id: text('stripe_customer_id'),                  // ID do cliente no Stripe para gerenciar pagamentos
-  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),  // Data/hora de criação (preenchido automaticamente pelo banco)
+export const organizations = pgTable('organizations', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  subscription_tier: text('subscription_tier').default('basic'),
+  subscription_status: text('subscription_status'),
+  stripe_customer_id: text('stripe_customer_id'),
+  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-// ─────────────────────────────────────────────
-// TABELA: profiles (Perfis de Usuário)
-// Armazena os dados de cada usuário do sistema
-// ─────────────────────────────────────────────
-export const profiles = sqliteTable('profiles', {
-  id: text('id').primaryKey(),                                                          // ID único do usuário (UUID)
-  full_name: text('full_name'),                                                         // Nome completo (pode ser nulo no cadastro inicial)
-  email: text('email').unique(),                                                        // E-mail do usuário (único no banco, não pode repetir)
-  password: text('password'),                                                           // Senha criptografada com bcrypt
-  role: text('role').default('member'),                                                 // Cargo: 'owner', 'admin', 'operator', 'member'
-  organization_id: text('organization_id').references(() => organizations.id),          // Chave estrangeira → vincula o usuário a uma organização
-  home_location_id: text('home_location_id'),                                           // Localização padrão do operador (opcional)
-  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),                       // Data de criação do perfil
+export const profiles = pgTable('profiles', {
+  id: text('id').primaryKey(),
+  full_name: text('full_name'),
+  email: text('email').unique(),
+  password: text('password'),
+  role: text('role').default('member'),
+  organization_id: text('organization_id').references(() => organizations.id),
+  home_location_id: text('home_location_id'),
+  api_key: text('api_key'),
+  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-// ─────────────────────────────────────────────
-// TABELA: inventory_locations (Locais de Estoque)
-// Representa locais físicos onde o estoque é guardado (ex: Depósito A, Loja 1)
-// ─────────────────────────────────────────────
-export const inventoryLocations = sqliteTable('inventory_locations', {
-  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()), // UUID gerado automaticamente pelo JavaScript
-  name: text('name').notNull(),                                       // Nome do local (obrigatório)
-  description: text('description'),                                   // Descrição opcional do local
-  organization_id: text('organization_id').references(() => organizations.id), // Organização proprietária do local
-  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),    // Data de criação
+export const inventoryLocations = pgTable('inventory_locations', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  description: text('description'),
+  organization_id: text('organization_id').references(() => organizations.id),
+  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-// ─────────────────────────────────────────────
-// TABELA: suppliers (Fornecedores)
-// Empresas ou pessoas que fornecem produtos
-// ─────────────────────────────────────────────
-export const suppliers = sqliteTable('suppliers', {
-  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()), // UUID gerado automaticamente
-  name: text('name').notNull(),                                       // Nome do fornecedor (obrigatório)
-  email: text('email'),                                               // E-mail de contato (opcional)
-  phone: text('phone'),                                               // Telefone de contato (opcional)
-  address: text('address'),                                           // Endereço completo (opcional)
-  cnpj: text('cnpj'),                                                 // CNPJ da empresa fornecedora (opcional)
-  category: text('category'),                                         // Categoria do fornecedor (ex: 'Alimentos', 'Eletrônicos')
-  organization_id: text('organization_id').references(() => organizations.id), // Organização dona deste fornecedor
-  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),    // Data de cadastro
+export const suppliers = pgTable('suppliers', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  email: text('email'),
+  phone: text('phone'),
+  address: text('address'),
+  cnpj: text('cnpj'),
+  category: text('category'),
+  organization_id: text('organization_id').references(() => organizations.id),
+  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-// ─────────────────────────────────────────────
-// TABELA: customers (Clientes)
-// Clientes que compram os produtos do estoque
-// ─────────────────────────────────────────────
-export const customers = sqliteTable('customers', {
-  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()), // UUID gerado automaticamente
-  name: text('name').notNull(),                                       // Nome do cliente (obrigatório)
-  email: text('email'),                                               // E-mail do cliente (opcional)
-  phone: text('phone'),                                               // Telefone do cliente (opcional)
-  address: text('address'),                                           // Endereço do cliente (opcional)
-  cpf_cnpj: text('cpf_cnpj'),                                        // CPF (pessoa física) ou CNPJ (pessoa jurídica)
-  type: text('type'),                                                 // Tipo: 'PF' (pessoa física) ou 'PJ' (pessoa jurídica)
-  organization_id: text('organization_id').references(() => organizations.id), // Organização dona deste cliente
-  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),    // Data de cadastro
+export const customers = pgTable('customers', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  email: text('email'),
+  phone: text('phone'),
+  address: text('address'),
+  cpf_cnpj: text('cpf_cnpj'),
+  type: text('type'),
+  organization_id: text('organization_id').references(() => organizations.id),
+  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-// ─────────────────────────────────────────────
-// TABELA: products (Produtos do Estoque)
-// Armazena todos os produtos cadastrados no inventário
-// ─────────────────────────────────────────────
-export const products = sqliteTable('products', {
-  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),  // UUID gerado automaticamente
-  name: text('name').notNull(),                                        // Nome do produto (obrigatório)
-  barcode: text('barcode'),                                            // Código de barras (EAN/UPC) para leitura por scanner
-  category: text('category').default('Geral'),                        // Categoria do produto. Padrão: 'Geral'
-  unit: text('unit').default('unidade'),                              // Unidade de medida: 'unidade', 'kg', 'litro', etc.
-  price: real('price').default(0),                                    // Preço de venda (decimal)
-  cost_price: real('cost_price').default(0),                          // Preço de custo (decimal) para cálculo de margem
-  quantity: integer('quantity').default(0),                           // Quantidade total em estoque
-  min_quantity: integer('min_quantity').default(0),                   // Quantidade mínima antes de disparar alerta de reposição
-  max_quantity: integer('max_quantity').default(0),                   // Quantidade máxima permitida em estoque
-  stock_by_location: text('stock_by_location', { mode: 'json' }),    // JSON com estoque por local { locationId: quantidade }
-  expiry_date: text('expiry_date'),                                   // Data de validade do produto (opcional)
-  supplier_id: text('supplier_id').references(() => suppliers.id),   // Fornecedor padrão deste produto
-  organization_id: text('organization_id').references(() => organizations.id), // Organização dona do produto
-  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),    // Data de cadastro
+export const products = pgTable('products', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: text('name').notNull(),
+  barcode: text('barcode'),
+  category: text('category').default('Geral'),
+  unit: text('unit').default('unidade'),
+  price: doublePrecision('price').default(0),
+  cost_price: doublePrecision('cost_price').default(0),
+  quantity: integer('quantity').default(0),
+  min_quantity: integer('min_quantity').default(0),
+  max_quantity: integer('max_quantity').default(0),
+  stock_by_location: jsonb('stock_by_location'),
+  expiry_date: text('expiry_date'),
+  supplier_id: uuid('supplier_id').references(() => suppliers.id),
+  organization_id: text('organization_id').references(() => organizations.id),
+  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-// ─────────────────────────────────────────────
-// TABELA: stock_movements (Movimentações de Estoque)
-// Registra cada entrada ou saída de produto — o histórico completo do estoque
-// ─────────────────────────────────────────────
-export const stockMovements = sqliteTable('stock_movements', {
-  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),                     // UUID gerado automaticamente
-  product_id: text('product_id').notNull().references(() => products.id),                // Produto movimentado (obrigatório)
-  type: text('type').notNull(), // 'ENTRY' | 'EXIT'                                      // Tipo da movimentação: ENTRY (entrada) ou EXIT (saída)
-  quantity: integer('quantity').notNull(),                                               // Quantidade movimentada nesta operação
-  new_quantity: integer('new_quantity'),                                                 // Quantidade total após a movimentação (snapshot)
-  reason: text('reason'),                                                                // Motivo da movimentação (ex: 'Venda', 'Compra', 'Transferência')
-  user_id: text('user_id'),                                                              // ID do usuário que realizou a movimentação
-  location_id: text('location_id').references(() => inventoryLocations.id),             // Local de origem da movimentação
-  target_location_id: text('target_location_id').references(() => inventoryLocations.id), // Local de destino (para transferências)
-  supplier_id: text('supplier_id').references(() => suppliers.id),                      // Fornecedor (para entradas por compra)
-  customer_id: text('customer_id').references(() => customers.id),                      // Cliente (para saídas por venda)
-  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),                       // Data/hora da movimentação
+export const stockMovements = pgTable('stock_movements', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  product_id: uuid('product_id').notNull().references(() => products.id),
+  type: text('type').notNull(),
+  quantity: integer('quantity').notNull(),
+  new_quantity: integer('new_quantity'),
+  reason: text('reason'),
+  user_id: text('user_id'),
+  location_id: uuid('location_id').references(() => inventoryLocations.id),
+  target_location_id: uuid('target_location_id').references(() => inventoryLocations.id),
+  supplier_id: uuid('supplier_id').references(() => suppliers.id),
+  customer_id: uuid('customer_id').references(() => customers.id),
+  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),
 });
 
-// ─────────────────────────────────────────────
-// RELACIONAMENTOS (Relations)
-// Define como o Drizzle deve fazer JOINs entre as tabelas
-// Isso permite usar "with: { organization: true }" nas queries
-// ─────────────────────────────────────────────
+export const organizationInvites = pgTable('organization_invites', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  organization_id: text('organization_id').notNull().references(() => organizations.id),
+  email: text('email').notNull(),
+  role: text('role').notNull(),
+  location_id: uuid('location_id').references(() => inventoryLocations.id),
+  status: text('status').notNull().default('pending'),
+  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),
+});
 
-// Um perfil pertence a uma organização
 export const profilesRelations = relations(profiles, ({ one }) => ({
   organization: one(organizations, {
-    fields: [profiles.organization_id],    // Campo local (chave estrangeira)
-    references: [organizations.id],        // Campo referenciado na tabela organizations
+    fields: [profiles.organization_id],
+    references: [organizations.id],
   }),
 }));
 
-// Um produto pertence a uma organização, a um fornecedor, e tem muitas movimentações
 export const productsRelations = relations(products, ({ one, many }) => ({
   organization: one(organizations, {
     fields: [products.organization_id],
@@ -143,10 +113,9 @@ export const productsRelations = relations(products, ({ one, many }) => ({
     fields: [products.supplier_id],
     references: [suppliers.id],
   }),
-  stockMovements: many(stockMovements), // Um produto pode ter muitas movimentações
+  stockMovements: many(stockMovements),
 }));
 
-// Uma movimentação pertence a um produto, local de origem, local de destino, fornecedor, cliente e usuário
 export const stockMovementsRelations = relations(stockMovements, ({ one }) => ({
   product: one(products, {
     fields: [stockMovements.product_id],
@@ -174,7 +143,6 @@ export const stockMovementsRelations = relations(stockMovements, ({ one }) => ({
   }),
 }));
 
-// Um local de estoque pertence a uma organização e tem muitas movimentações
 export const inventoryLocationsRelations = relations(inventoryLocations, ({ one, many }) => ({
   organization: one(organizations, {
     fields: [inventoryLocations.organization_id],
@@ -183,7 +151,6 @@ export const inventoryLocationsRelations = relations(inventoryLocations, ({ one,
   stockMovements: many(stockMovements),
 }));
 
-// Um fornecedor pertence a uma organização e tem muitos produtos
 export const suppliersRelations = relations(suppliers, ({ one, many }) => ({
   organization: one(organizations, {
     fields: [suppliers.organization_id],
@@ -192,7 +159,6 @@ export const suppliersRelations = relations(suppliers, ({ one, many }) => ({
   products: many(products),
 }));
 
-// Um cliente pertence a uma organização e tem muitas movimentações (compras)
 export const customersRelations = relations(customers, ({ one, many }) => ({
   organization: one(organizations, {
     fields: [customers.organization_id],
@@ -201,21 +167,6 @@ export const customersRelations = relations(customers, ({ one, many }) => ({
   stockMovements: many(stockMovements),
 }));
 
-// ─────────────────────────────────────────────
-// TABELA: organization_invites (Convites para Organizações)
-// Permite convidar membros para a organização por e-mail
-// ─────────────────────────────────────────────
-export const organizationInvites = sqliteTable('organization_invites', {
-  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),                    // UUID gerado automaticamente
-  organization_id: text('organization_id').notNull().references(() => organizations.id), // Organização que enviou o convite
-  email: text('email').notNull(),                                                        // E-mail do convidado (obrigatório)
-  role: text('role').notNull(),                                                          // Cargo que será atribuído ao convidado
-  location_id: text('location_id').references(() => inventoryLocations.id),             // Local onde o convidado atuará (opcional)
-  status: text('status').notNull().default('pending'),                                  // Status do convite: 'pending', 'accepted', 'rejected'
-  created_at: text('created_at').default(sql`CURRENT_TIMESTAMP`),                       // Data de envio do convite
-});
-
-// Um convite pertence a uma organização e opcionalmente a um local
 export const organizationInvitesRelations = relations(organizationInvites, ({ one }) => ({
   organization: one(organizations, {
     fields: [organizationInvites.organization_id],

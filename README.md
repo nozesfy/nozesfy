@@ -46,17 +46,18 @@ A organização dos arquivos segue o padrão do Next.js 15 (App Router) e as mel
     - `layout.tsx`: Layout raiz com `AuthProvider`.
 - **`components/`**: Componentes React reutilizáveis (Navbar, AuthProvider, Footer).
 - **`lib/`**: Core da aplicação.
-    - `db/`: Schema Drizzle e conexão com SQLite.
+    - `db/`: Schema Drizzle e conexão com PostgreSQL (Supabase).
     - `actions/`: Server Actions (auth, inventory, stripe).
-- **`drizzle/`**: Migrações SQL geradas automaticamente.
+- **`drizzle/`**: Migrações SQL geradas automaticamente (PostgreSQL).
 - **`public/`**: Arquivos estáticos (logos, ícones).
 - **`tkinter/`**: Wrapper desktop em Python (PyWebView).
 - **`scratch/`**: Scripts utilitários para DB (não fazem parte do app).
 - **`hooks/`**: Hooks React personalizados.
 
 ### 2.2 Arquivos de Configuração
-- **`sqlite.db`**: Banco de dados SQLite versionado.
-- **`drizzle.config.ts`**: Configuração do Drizzle ORM.
+- **`.env`**: Variáveis de ambiente (copiar de `.env.example`).
+- **`DATABASE_URL`**: Connection string do PostgreSQL (Supabase).
+- **`drizzle.config.ts`**: Configuração do Drizzle ORM (PostgreSQL).
 - **`next.config.ts`**: Configuração do Next.js 15.
 - **`package.json`**: Manifesto com dependências e scripts.
 - **`main.spec`**: PyInstaller spec para build do desktop app.
@@ -69,7 +70,7 @@ A aplicação segue os padrões modernos de desenvolvimento Full Stack:
 
 - **Frontend/Backend**: [Next.js](https://nextjs.org/) (App Router)
 - **Linguagem**: TypeScript
-- **Banco de Dados**: SQLite (Local/Embeddable)
+- **Banco de Dados**: PostgreSQL via [Supabase](https://supabase.com)
 - **ORM**: [Drizzle ORM](https://orm.drizzle.team/)
 - **Estilização**: Tailwind CSS
 - **Autenticação**: JWT (JSON Web Tokens) com armazenamento em Cookies HttpOnly e Bcrypt para hashing de senhas.
@@ -109,7 +110,7 @@ Atributos de qualidade e restrições técnicas:
 | **RNF01** | Isolamento de Dados | Nenhuma organização pode acessar dados de outra (Strict Organization ID). |
 | **RNF02** | Segurança | Todas as senhas devem ser armazenadas com Salt/Hash (Bcrypt). |
 | **RNF03** | Performance | Listagem de histórico de estoque limitada a 200 registros por consulta inicial. |
-| **RNF04** | Disponibilidade | O banco SQLite garante persistência local estável e backups simplificados. |
+| **RNF04** | Disponibilidade | O banco PostgreSQL (Supabase) garante alta disponibilidade e backups automáticos. |
 | **RNF05** | Portabilidade | Funciona tanto em navegadores modernos quanto em Windows/macOS/Linux via wrapper. |
 | **RNF06** | UX/UI | Interface responsiva e otimizada para produtividade. |
 
@@ -202,6 +203,8 @@ npm install
 ```
 
 ### Configuração do Banco
+1. Copie `.env.example` para `.env` e preencha `DATABASE_URL` com a connection string do Supabase.
+2. Sincronize o schema:
 ```bash
 npx drizzle-kit push
 ```
