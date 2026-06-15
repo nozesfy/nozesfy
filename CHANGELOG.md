@@ -1,5 +1,11 @@
 # Changelog
 
+## v1.0.1 (2026-06-15)
+
+- Atualizado `.gitignore` com patterns para TypeScript, Python, IDE, Drizzle
+- Removido `AGENTS.md` do tracking e adicionado ao `.gitignore`
+- Removida referência ao `AGENTS.md` do `README.md`
+
 ## v1.0.0 (2026-06-15)
 
 - Removed `aplicativo/` subfolder — app movido para raiz do repositório
