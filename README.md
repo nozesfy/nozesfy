@@ -195,7 +195,18 @@ O projeto inclui um componente de interoperabilidade (`tkinter/main.py`) que:
 
 ---
 
-## 10. Instruções de Desenvolvimento
+## 10. Branchs do Projeto
+
+O repositório possui as seguintes branchs:
+
+| Branch | Descrição |
+|:---|---|
+| **main** | Branch principal com a versão mais atualizada do sistema, utilizando PostgreSQL (Supabase) como banco de dados. |
+| **sqlite** | Branch legada com suporte a SQLite, anterior à migração para PostgreSQL (v2.0.0). Mantida para consulta e referência histórica. |
+
+---
+
+## 11. Instruções de Desenvolvimento
 
 ### Instalação
 ```bash
